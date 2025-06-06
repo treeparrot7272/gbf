@@ -1,0 +1,32 @@
+<div id="hypoxia-form" style="display: none; margin-top: 20px;">
+    <h3>Hypoxia Details</h3>
+    <div class="form-group">
+        <label for="onset_date">Date of Onset:</label>
+        <input type="date" id="onset_date" name="onset_date" class="form-control">
+    </div>
+    <div class="form-group">
+        <label>Etiology:</label><br>
+        <input type="radio" id="undifferentiated" name="etiology" value="Undifferentiated" checked>
+        <label for="undifferentiated">Undifferentiated</label><br>
+        <input type="radio" id="known" name="etiology" value="Known">
+        <label for="known">Known</label>
+    </div>
+    <div id="known-etiology-options" style="display: none; margin-top: 10px;">
+        <label for="etiology_type">Select Known Etiology:</label>
+        <select id="etiology_type" name="etiology_type" class="form-control">
+            <option value="CHF">CHF</option>
+            <option value="COPD">COPD</option>
+            <option value="PE">PE</option>
+            <option value="Pneumonia">Pneumonia</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Current Treatments:</label><br>
+        <input type="checkbox" id="diuresis" name="diuresis">
+        <label for="diuresis">Diuresis</label><br>
+        <input type="checkbox" id="antibiotics" name="antibiotics">
+        <label for="antibiotics">Antibiotics</label><br>
+        <input type="checkbox" id="anticoagulation" name="anticoagulation">
+        <label for="anticoagulation">Anticoagulation</label>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add to Issues?</h2>
+
+<div class="card">
+  <div class="card-body">
+    {% if patient.history and patient.history.keys()|list %}
+      <form method="POST" action="{{ url_for('update_issues', index=index) }}">
+        <p>The following items from the patient's history can be added as issues:</p>
+        
+          {% for history_item in patient.history.keys() %}
+
+              
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  name="selected_issues" 
+                  value="{{ history_item }}"
+                  id="check_{{ history_item }}"
+                  {% if history_item in patient.issues %}checked{% endif %}
+                >{{ history_item }}
+              </div>
+
+          {% endfor %}
+
+        <button type="submit" class="btn btn-primary mt-3">Update Issues</button>
+      </form>
+    {% else %}
+      <p>No history items available to add as issues.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    Current Issues
+  </div>
+  <div class="card-body">
+    {% if patient.issues and patient.issues|length > 0 %}
+      <ol class="list-group list-group-numbered">
+        {% for issue in patient.issues %}
+          <li class="list-group-item">
+            {% set template_path = 'issues_forms/' + issue.lower() + '_iss.html' %}
+              <a href="{{ url_for('issue_form', issue_name=issue.lower(), index=index) }}">{{ issue }}</a>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p>No issues currently identified.</p>
+    {% endif %}
+  </div>
+</div>
+
+<a href="{{ url_for('patient_details', index=index) }}" class="btn btn-secondary mt-3">Back to Patient Details</a>
+{% endblock %}

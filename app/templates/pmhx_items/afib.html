@@ -1,0 +1,66 @@
+{% from '_pmhx_macros.html' import get_field, is_checked %}
+
+<p>
+    <!-- Type of Atrial Fibrillation -->
+    <div class="checkbox-group">
+        <label for="afib_type"><strong>Type</strong></label>
+        <div>
+            <input type="checkbox" id="paroxysmal" name="afib_type" value="Paroxysmal" {{ is_checked(patient, 'Atrial Fibrillation', 'afib_type', 'Paroxysmal') }}>
+            <label for="paroxysmal">Paroxysmal</label>
+            
+            <input type="checkbox" id="persistent" name="afib_type" value="Persistent" {{ is_checked(patient, 'Atrial Fibrillation', 'afib_type', 'Persistent') }}>
+            <label for="persistent">Persistent</label>
+            
+            <input type="checkbox" id="permanent" name="afib_type" value="Permanent" {{ is_checked(patient, 'Atrial Fibrillation', 'afib_type', 'Permanent') }}>
+            <label for="permanent">Permanent</label>
+        </div>
+    </div>
+
+    <!-- Rate or Rhythm Control -->
+    <div class="checkbox-group">
+        <label for="rate_or_rhythm_control"><strong>Rate or Rhythm Control</strong></label>
+        <div>
+            <input type="radio" id="rate_control" name="rate_or_rhythm_control" value="Rate Control" {{ is_checked(patient, 'Atrial Fibrillation', 'rate_or_rhythm_control', 'Rate Control') }}>
+            <label for="rate_control">Rate Control</label>
+            
+            <input type="radio" id="rhythm_control" name="rate_or_rhythm_control" value="Rhythm Control" {{ is_checked(patient, 'Atrial Fibrillation', 'rate_or_rhythm_control', 'Rhythm Control') }}>
+            <label for="rhythm_control">Rhythm Control</label>
+            
+            <input type="radio" id="not_applicable" name="rate_or_rhythm_control" value="Not Applicable" {{ is_checked(patient, 'Atrial Fibrillation', 'rate_or_rhythm_control', 'Not Applicable') }}>
+            <label for="not_applicable">Not Applicable</label>
+        </div>
+    </div>
+
+    <!-- Anticoagulation -->
+    <div class="checkbox-group">
+        <label for="anticoagulation"><strong>Anticoagulation</strong></label>
+        <div>
+            <input type="radio" id="doac" name="anticoagulation" value="DOAC" {{ is_checked(patient, 'Atrial Fibrillation', 'anticoagulation', 'DOAC') }}>
+            <label for="doac">DOAC</label>
+            <input type="radio" id="warfarin" name="anticoagulation" value="Warfarin" {{ is_checked(patient, 'Atrial Fibrillation', 'anticoagulation', 'Warfarin') }}>
+            <label for="warfarin">Warfarin</label>
+            <input type="radio" id="no_anticoagulation" name="anticoagulation" value="No Anticoagulation" {{ is_checked(patient, 'Atrial Fibrillation', 'anticoagulation', 'No Anticoagulation') }}>
+            <label for="no_anticoagulation">No Anticoagulation</label>
+        </div>
+    </div>
+    <!-- CHADS Score -->
+    <div class="checkbox-group">
+        <label for="chads_score"><strong>CHADS Score</strong></label>
+        <div>
+            <input type="radio" id="chads_0" name="chads_score" value="0" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '0') }}>
+            <label for="chads_0">0</label>
+            <input type="radio" id="chads_1" name="chads_score" value="1" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '1') }}>
+            <label for="chads_1">1</label>
+            <input type="radio" id="chads_2" name="chads_score" value="2" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '2') }}>
+            <label for="chads_2">2</label>
+            <input type="radio" id="chads_3" name="chads_score" value="3" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '3') }}>
+            <label for="chads_3">3</label>
+            <input type="radio" id="chads_4" name="chads_score" value="4" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '4') }}>
+            <label for="chads_4">4</label>
+            <input type="radio" id="chads_5" name="chads_score" value="5" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '5') }}>
+            <label for="chads_5">5</label>
+            <input type="radio" id="chads_6" name="chads_score" value="6" {{ is_checked(patient, 'Atrial Fibrillation', 'chads_score', '6') }}>
+            <label for="chads_6">6</label>
+        </div>
+    </div>
+</p>

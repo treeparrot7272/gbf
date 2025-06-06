@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Hospital Medications</h2>
+
+<form method="POST" action="{{ url_for('meds.edit_hosp_meds', index=index) }}">
+    <div class="table-container" style="margin: 0 auto; max-width: 1000px; text-align: left;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>🏡</th>
+                    <th>Medication Name</th>
+                    <th>Type</th>
+                    <th>Dose</th>
+                    <th>Units</th>
+                    <th>Formulation</th>
+                    <th>Frequency</th>
+                    <th>PRN</th>
+                    <th>Start Date</th>
+                    <th>Stop Date</th>
+                    <th>Status (A/S/D)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med_name, med_details in patient.hosp_meds|dictsort(by='key') %}
+                <tr>
+                    <td><input type="checkbox" name="med_{{ med_name }}_home" {% if med_details.get('home') %}checked{% endif %}></td>
+                    <td>{{ med_name }}</td>
+                    <td><input type="text" name="med_{{ med_name }}_type" value="{{ med_details.get('type', '') }}"></td>
+                    <td><input type="text" name="med_{{ med_name }}_dose" value="{{ med_details.get('dose', '') }}"></td>
+                    <td><input type="text" name="med_{{ med_name }}_units" value="{{ med_details.get('units', '') }}"></td>
+                    <td><input type="text" name="med_{{ med_name }}_Formulation" value="{{ med_details.get('Formulation', '') }}"></td>
+                    <td><input type="text" name="med_{{ med_name }}_frequency" value="{{ med_details.get('frequency', '') }}"></td>
+                    <td><input type="checkbox" name="med_{{ med_name }}_PRN" {% if med_details.get('PRN') %}checked{% endif %}></td>
+                    <td>
+                        <input type="date" name="med_{{ med_name }}_start_date" 
+                               value="{{ med_details.get('start_date', '').split(' ')[0] | datetimeformat if med_details.get('start_date') else '' }}">
+                    </td>
+                    <td>
+                        <input type="date" name="med_{{ med_name }}_stop_date" 
+                               value="{{ med_details.get('stop_date', '').split(' ')[0] | datetimeformat if med_details.get('stop_date') else '' }}">
+                    </td>
+                    <td>
+                        <select name="med_{{ med_name }}_A/S/D">
+                            <option value="Active" {% if med_details.get('A/S/D') == 'Active' %}selected{% endif %}>Active</option>
+                            <option value="Cancelled" {% if med_details.get('A/S/D') == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                            <option value="Discontinued" {% if med_details.get('A/S/D') == 'Discontinued' %}selected{% endif %}>Discontinued</option>
+                            <option value="Stop Date Reached" {% if med_details.get('A/S/D') == 'Stop Date Reached' %}selected{% endif %}>Stop Date Reached</option>
+                        </select>
+                    </td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<!-- Button to show the add medication form -->
+<button class="btn btn-secondary" onclick="toggleAddMedForm()">Add Medication</button>
+
+<!-- Hidden form for adding a new medication -->
+<div id="add-med-form" style="display: none; margin-top: 20px;">
+    <form method="POST" action="{{ url_for('meds.add_med', index=index) }}">
+        <h3>Add New Medication</h3>
+        <div class="form-group">
+            <label for="med_name">Medication Name:</label>
+            <input type="text" id="med_name" name="med_name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="dose">Dose:</label>
+            <input type="text" id="dose" name="dose" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="units">Units:</label>
+            <input type="text" id="units" name="units" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="Formulation">Formulation:</label>
+            <input type="text" id="Formulation" name="Formulation" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="frequency">Frequency:</label>
+            <input type="text" id="frequency" name="frequency" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="PRN">PRN:</label>
+            <input type="checkbox" id="PRN" name="PRN">
+        </div>
+        <div class="form-group">
+            <label for="stop_date">Stop Date:</label>
+            <input type="date" id="stop_date" name="stop_date" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="A/S/D">Status (A/S/D):</label>
+            <select id="A/S/D" name="A/S/D" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Stopped">Stopped</option>
+                <option value="Discontinued">Discontinued</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Add Medication</button>
+    </form>
+</div>
+
+<a href="{{ url_for('patient_details', index=index) }}" class="btn btn-secondary">Back to Patient Details</a>
+
+<script>
+    function toggleAddMedForm() {
+        const form = document.getElementById('add-med-form');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+{% endblock %}

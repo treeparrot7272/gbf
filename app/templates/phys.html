@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Enter Vital Signs</h2>
+
+<form method="POST" action="{{ url_for('physical_exam.save_vitals', index=index) }}">
+    <div class="form-group">
+        <label for="datetime">Date/Time:</label>
+        <input type="datetime-local" id="datetime" name="datetime" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="temp">Temp:</label>
+        <input type="text" id="temp" name="temp" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="bp">BP:</label>
+        <input type="text" id="bp" name="bp" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="hr">HR:</label>
+        <input type="text" id="hr" name="hr" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="rr">RR:</label>
+        <input type="text" id="rr" name="rr" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="o2sat">Sats (%):</label>
+        <input type="text" id="o2sat" name="o2sat" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="o2modality">Oxygen Modality:</label>
+        <select id="o2modality" name="o2modality" class="form-control" onchange="toggleO2SupportField()">
+            <option value="Room Air" selected>Room Air</option>
+            <option value="Nasal Prongs">Nasal Prongs</option>
+            <option value="Mask">Mask</option>
+            <option value="Optiflow">Optiflow</option>
+        </select>
+    </div>
+    <div class="form-group" id="o2support-group" style="display: none;">
+        <label for="o2support">O2 Support:</label>
+        <input type="text" id="o2support" name="o2support" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+<h2>Enter Physical Exam</h2>
+<form method="POST" action="{{ url_for('physical_exam.save_exam', index=index) }}">
+    <div class="form-group">
+        <label for="exam_date">Date:</label>
+        <input type="datetime-local" id="exam_date" name="exam_date" class="form-control">
+    </div><br>
+    <div class="form-group">
+        <label>CV Exam:</label>
+        <div class="form-check">
+            <input type="checkbox" id="s1" name="cv_sounds" value="S1" class="form-check-input" checked>
+            <label for="s1" class="form-check-label">S1</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" id="s2" name="cv_sounds" value="S2" class="form-check-input" checked>
+            <label for="s2" class="form-check-label">S2</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" id="s3" name="cv_sounds" value="S3" class="form-check-input">
+            <label for="s3" class="form-check-label">S3</label>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" id="s4" name="cv_sounds" value="S4" class="form-check-input">
+            <label for="s4" class="form-check-label">S4</label>
+        </div>
+        <div class="form-check">
+            <input type="radio" id="no_murmur" name="murmur" value="No Murmur" class="form-check-input" checked onclick="toggleMurmurDescription(false)">
+            <label for="no_murmur" class="form-check-label">No Murmur</label>
+        </div>
+        <div class="form-check">
+            <input type="radio" id="murmur_present" name="murmur" value="Murmur Present" class="form-check-input" onclick="toggleMurmurDescription(true)">
+            <label for="murmur_present" class="form-check-label">Murmur Present</label>
+        </div>
+        <div class="form-group" id="murmur-description-group" style="display: none;">
+            <label for="murmur_description">Murmur Description:</label>
+            <textarea id="murmur_description" name="murmur_description" class="form-control" rows="2"></textarea>
+        </div>
+    </div></br>
+    <div class="form-group">
+        <label for="resp_exam">Resp Exam:</label>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="equal_air_entry" name="air_entry" value="Equal air entry" class="form-check-input" checked onclick="toggleAirEntryDescription(false)">
+            <label for="equal_air_entry" class="form-check-label">Equal air entry</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="abnormal_air_entry" name="air_entry" value="Abnormal" class="form-check-input" onclick="toggleAirEntryDescription(true)">
+            <label for="abnormal_air_entry" class="form-check-label">Abnormal</label>
+        </div>
+        <div class="form-group" id="air-entry-description-group" style="display: none;">
+            <label for="air_entry_description">Abnormality Description:</label>
+            <textarea id="air_entry_description" name="air_entry_description" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="no_crackles" name="crackles" value="No crackles" class="form-check-input" checked onclick="toggleCracklesDescription(false)">
+            <label for="no_crackles" class="form-check-label">No crackles</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="crackles_present" name="crackles" value="Crackles present" class="form-check-input" onclick="toggleCracklesDescription(true)">
+            <label for="crackles_present" class="form-check-label">Crackles present</label>
+        </div>
+        <div class="form-group" id="crackles-description-group" style="display: none;">
+            <label for="crackles_description">Crackles Description:</label>
+            <textarea id="crackles_description" name="crackles_description" class="form-control" rows="2"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="abd_exam">Abdominal Exam:</label>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="soft_nontender" name="abd_exam" value="Soft and nontender" class="form-check-input" checked onclick="toggleAbdDescription(false)">
+            <label for="soft_nontender" class="form-check-label">Soft and nontender</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input type="radio" id="abd_abnormal" name="abd_exam" value="Abnormal" class="form-check-input" onclick="toggleAbdDescription(true)">
+            <label for="abd_abnormal" class="form-check-label">Abnormal</label>
+        </div>
+        <div class="form-group" id="abd-description-group" style="display: none;">
+            <label for="abd_description">Abnormality Description:</label>
+            <textarea id="abd_description" name="abd_description" class="form-control" rows="2"></textarea>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Exam</button>
+</form>
+
+<script>
+    function toggleO2SupportField() {
+        const modality = document.getElementById('o2modality').value;
+        const o2SupportGroup = document.getElementById('o2support-group');
+        if (modality === 'Room Air') {
+            o2SupportGroup.style.display = 'none';
+            document.getElementById('o2support').value = '';
+        } else {
+            o2SupportGroup.style.display = 'block';
+        }
+    }
+
+    function toggleMurmurDescription(show) {
+        const murmurDescriptionGroup = document.getElementById('murmur-description-group');
+        if (show) {
+            murmurDescriptionGroup.style.display = 'block';
+        } else {
+            murmurDescriptionGroup.style.display = 'none';
+            document.getElementById('murmur_description').value = '';
+        }
+    }
+
+    function toggleAirEntryDescription(show) {
+        const airEntryDescriptionGroup = document.getElementById('air-entry-description-group');
+        if (show) {
+            airEntryDescriptionGroup.style.display = 'block';
+        } else {
+            airEntryDescriptionGroup.style.display = 'none';
+            document.getElementById('air_entry_description').value = '';
+        }
+    }
+
+    function toggleCracklesDescription(show) {
+        const cracklesDescriptionGroup = document.getElementById('crackles-description-group');
+        if (show) {
+            cracklesDescriptionGroup.style.display = 'block';
+        } else {
+            cracklesDescriptionGroup.style.display = 'none';
+            document.getElementById('crackles_description').value = '';
+        }
+    }
+
+    function toggleAbdDescription(show) {
+        const abdDescriptionGroup = document.getElementById('abd-description-group');
+        if (show) {
+            abdDescriptionGroup.style.display = 'block';
+        } else {
+            abdDescriptionGroup.style.display = 'none';
+            document.getElementById('abd_description').value = '';
+        }
+    }
+</script>
+
+<a href="{{ url_for('patient_details', index=index) }}" class="btn btn-secondary">Back to Patient Details</a>
+{% endblock %}

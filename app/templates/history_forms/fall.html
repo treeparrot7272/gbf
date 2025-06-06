@@ -1,0 +1,24 @@
+{% from '_history_macros.html' import get_field, is_checked %}
+
+<p>
+    <!-- Fall Details -->
+    <div>
+        <label for="fall_date">Date of Fall</label>
+        <input type="date" id="fall_date" name="fall_date" value="{{ get_field(patient, 'fall', 'fall_date') }}">
+    </div>
+
+    <div>
+        <label for="fall_lost_consciousness">Lost Consciousness</label>
+        <input type="checkbox" id="fall_lost_consciousness" name="fall_lost_consciousness" {{ is_checked(patient, 'fall', 'fall_lost_consciousness') }}>
+    </div>
+
+    <div>
+        <label for="seizure_activity">Seizure-like Activity</label>
+        <input type="checkbox" id="seizure_activity" name="seizure_activity" {{ is_checked(patient, 'fall', 'fall_seizure') }}>
+    </div>
+
+    <div>
+        <label for="hit_head">Hit Head</label>
+        <input type="checkbox" id="hit_head" name="hit_head" {{ is_checked(patient, 'fall', 'fall_hit_head') }}>
+    </div>
+</p>

@@ -1,0 +1,45 @@
+{% from '_pmhx_macros.html' import get_field, is_checked, is_selected %}
+
+{% set diabetic_meds = [] %}
+{% if patient.hosp_meds %}
+    {% for med_name, med in patient.hosp_meds.items() %}
+        {% if med.type == "Diabetic" %}
+            {% set _ = diabetic_meds.append(med_name) %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<p>
+    <label for="diabetes_type"><strong>Type:</strong></label>
+    <input type="radio" id="type_1" name="diabetes_type" value="1" {{ is_selected(patient, 'Diabetes', 'type', '1') }}>
+    <label for="type_1">1</label>
+    <input type="radio" id="type_2" name="diabetes_type" value="2" {{ is_selected(patient, 'Diabetes', 'diabetes_type', '2') }}>
+    <label for="type_2">2</label>
+    <input type="radio" id="type_unknown" name="diabetes_type" value="unknown" {{ is_selected(patient, 'Diabetes', 'diabetes_type', 'unknown') }}>
+    <label for="type_unknown">Unknown</label>
+</p>
+<p>
+    <label for="last_a1c"><strong>Last A1c:</strong></label>
+    <input type="text" id="last_a1c" name="last_a1c" value="{{ get_field(patient, 'Diabetes', 'last_a1c') }}">
+</p>
+<p>
+    <label for="endocrinologist"><strong>Endocrinologist:</strong></label>
+    <input type="text" id="endocrinologist" name="endocrinologist" value="{{ get_field(patient, 'Diabetes', 'endocrinologist')}}" list="endocrinologist_list">
+    <datalist id="endocrinologist_list">
+        <option value="Katz">
+        <option value="Garbutt">
+    </datalist>
+</p>
+<p>
+    <label for="complications"><strong>Complications:</strong></label>
+    <input type="checkbox" id="complications_nephropathy" name="complications" value="Nephropathy" {{ is_checked(patient, 'Diabetes', 'complications', 'Nephropathy') }}>
+    <label for="complications_nephropathy">Nephropathy</label>
+    <input type="checkbox" id="complications_neuropathy" name="complications" value="Neuropathy" {{ is_checked(patient, 'Diabetes', 'complications', 'Neuropathy') }}>
+    <label for="complications_neuropathy">Neuropathy</label>
+    <input type="checkbox" id="complications_retinopathy" name="complications" value="Retinopathy" {{ is_checked(patient, 'Diabetes', 'complications', 'Retinopathy') }}>
+    <label for="complications_retinopathy">Retinopathy</label>
+</p>
+<p>
+    <label for="diabetes_meds"><strong>Medications:</strong></label>
+    <textarea id="diabetes_meds" name="diabetes_meds">{% if get_field(patient, 'Diabetes', 'diabetes_meds') %}{{ get_field(patient, 'Diabetes', 'diabetes_meds') }}{% elif diabetic_meds %}{{ diabetic_meds | join(', ') }}{% endif %}</textarea>
+</p>

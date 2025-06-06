@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="section-title">Patient Details</h2>
+<!-- Patient Admission Details Section -->
+<form method="POST" action="{{ url_for('update_patient_dates', index=index) }}">
+    <p>
+
+        <label for="admit_date"><strong>Admit Date:</strong></label>
+        <input type="date" id="admit_date" name="admit_date" value="{{ pt.admit_date }}">
+        &nbsp;&nbsp;&nbsp;
+        <label for="discharge_date"><strong>Discharge Date:</strong></label>
+        <input type="date" id="discharge_date" name="discharge_date" value="{{ pt.discharge_date }}">
+        <button type="submit">Update Dates</button>
+    </p>
+</form>
+
+<!-- Prestory Section -->
+<p id="summary-text" style="margin-top: 20px;">
+    <p id="summary-text" style="margin-top: 20px;">
+    {{ pt.i1 }}{{ pt.i2 }} is a {{ pt.age }} {{ pt.gender }} who was admitted to hospital on {{ pt.admit_date[5:] }} with complaints of 
+    {{ pt.history.keys()|list|join(', ') }}.
+
+    <!-- Add detailed write-ups for each history item -->
+    {% for history_item in pt.history.keys() %}
+        {% set write_up_function = history_item.lower() + '_write_up' %}
+        {% if write_up_function in write_ups.__dict__ %}
+            <br><br>{{ write_ups.__dict__[write_up_function](pt) }}
+        {% endif %}
+    {% endfor %}
+
+</p>
+</p>
+<a href="{{ url_for('prestory.prestory', index=index) }}" class="btn btn-secondary">Edit Prestory</a>
+<hr>
+
+<!-- Past Medical History Section -->
+<h3 class="subsection-title">
+     
+    
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('pmhx-section')">
+    Past Medical History
+</h3>
+<div id="pmhx-section">
+    <pre style="font-family: inherit; white-space: pre-wrap;">
+    {%- for disease, items in pt.pmhx.items() -%}
+    {{ disease }}
+        {% if items and items[0] is string -%}
+            {% for surgery in items -%}
+    </br>     - {{ surgery }}
+            {%- endfor -%}
+        {%- else -%}
+            {%- for item, value in items.items() -%}
+            {%- if value -%}
+            - {{ item.replace('_', ' ').title() }}:&nbsp; 
+                {%- if value is string or value is number -%}
+                    {{ value }}<br>&nbsp;      &nbsp;  
+                {%- else -%}
+                    {%- if value|length == 1 -%}
+                         {{ value[0] }}
+                    {%- elif value|length == 2 -%}
+                         {{ value[0] }} and {{ value[1] }}
+                    {%- else -%}
+                         {{ value[:-1]|join(', ') }} and {{ value[-1] }}
+                    {%- endif %}
+                {%- endif %}
+            {%- endif -%}
+            {%- endfor %}</br></br>
+        {%- endif -%}
+    {%- endfor -%}
+    </pre>
+    <a href="{{ url_for('pmhx.pmhx', index=index) }}" class="btn btn-primary">Add PMHx</a>
+</div>
+<hr>
+
+<!-- Patient Medications Section -->
+<!-- This section includes the medications list, edit button, and checkboxes for filtering -->
+<!-- The JavaScript functions handle the toggling of medication visibility based on the checkboxes -->
+<h3 class="subsection-title">
+     
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('meds-section')">
+    Medications
+</h3>
+<div id="meds-section">
+    <p><strong>Hospital Medications:</strong></p>
+
+    <!-- Add this link somewhere in patient_details.html -->
+    <a href="{{ url_for('meds.edit_hosp_meds', index=index) }}" class="btn btn-primary">Edit Hospital Medications</a>
+
+    <!-- Checkbox to toggle discontinued medications -->
+    <label>
+        <input type="checkbox" id="show_discontinued" onchange="toggleDiscontinued()"> Show DC
+    </label>
+    <label>
+        <input type="checkbox" id="show_prn" onchange="togglePRN()"> Show PRN
+    </label>
+    <!-- Checkbox to toggle medication classes -->
+    <label>
+        <input type="checkbox" id="show_med_classes" checked onchange="toggleMedClasses()"> Show Medication Classes
+    </label>
+
+    <!-- Medications list grouped by type -->
+    <div id="medications_list">
+        {%- for med_type, meds in grouped_meds.items() -%}
+            <div class="medication-group" data-med-type="{{ med_type }}">
+                <h4 class="med-class">-- {{ med_type }} --</h4>
+                {%- for med in meds -%}
+                    <div class="medication {% if med['A/S/D'] != 'Active' %}discontinued{% endif %} {% if med['PRN'] and med['A/S/D'] == 'Active' %}prn{% endif %}">
+                        {{ med['name'].capitalize()[:-2] if med['name'][-2] == '_' else med['name'].capitalize()}} {{ med['dose'] }} {{ med['units'] }} {{ med['Formulation'] }} {{ med['frequency'] }}
+                        {{ "PRN" if med['PRN'] else '' }} 
+                        <span class="stop-date">{{ (med['stop_date'][:6]) if med['stop_date'] else '' }}</span>
+                    </div>
+                {%- endfor -%}
+                <!-- Add a blank line after each medication group -->
+                <div class="group-spacer">&nbsp;</div>
+            </div>
+        {%- endfor -%}
+    </div>
+
+    <script>
+        function toggleDiscontinued() {
+            const showDiscontinued = document.getElementById('show_discontinued').checked;
+            const medicationGroups = document.querySelectorAll('.medication-group');
+
+            medicationGroups.forEach(group => {
+                const medications = group.querySelectorAll('.medication');
+                let hasVisibleMedications = false;
+
+                medications.forEach(med => {
+                    if (med.classList.contains('discontinued')) {
+                        med.style.display = showDiscontinued ? 'block' : 'none';
+                    }
+                    if (med.style.display !== 'none') {
+                        hasVisibleMedications = true;
+                    }
+                });
+
+                // Show or hide the group based on whether it has visible medications
+                group.style.display = hasVisibleMedications ? 'block' : 'none';
+            });
+        }
+
+        function togglePRN() {
+            const showPRN = document.getElementById('show_prn').checked;
+            const medicationGroups = document.querySelectorAll('.medication-group');
+
+            medicationGroups.forEach(group => {
+                const medications = group.querySelectorAll('.medication');
+                let hasVisibleMedications = false;
+
+                medications.forEach(med => {
+                    if (med.classList.contains('prn')) {
+                        med.style.display = showPRN ? 'block' : 'none';
+                    }
+                    if (med.style.display !== 'none') {
+                        hasVisibleMedications = true;
+                    }
+                });
+
+                // Show or hide the group based on whether it has visible medications
+                group.style.display = hasVisibleMedications ? 'block' : 'none';
+            });
+        }
+
+        function toggleMedClasses() {
+            const showMedClasses = document.getElementById('show_med_classes').checked;
+            const medClassHeaders = document.querySelectorAll('.med-class');
+            const medicationSeparator = document.querySelectorAll('.group-spacer');
+
+            medClassHeaders.forEach(header => {
+                header.style.display = showMedClasses ? 'block' : 'none';
+            });
+            medicationSeparator.forEach(separator => {
+                separator.style.display = showMedClasses ? 'block' : 'none';
+            });
+        }
+
+        // Initialize medication classes visibility
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleDiscontinued();
+            togglePRN();
+            toggleMedClasses();
+        });
+
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            if (section) {
+                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            }
+
+            // Prevent layout shifts by ensuring the section's height is maintained
+            if (section.style.display === 'none') {
+                section.style.height = '0';
+                section.style.overflow = 'hidden';
+            } else {
+                section.style.height = 'auto';
+                section.style.overflow = 'visible';
+            }
+        }
+    </script>
+    </br>
+    <form method="POST" action="{{ url_for('update_hosp_meds', index=index) }}" >
+    <button type="submit">Update from Clipboard</button>
+    </form>
+
+
+    <p><strong>Home Medications:</strong></p>
+        {% for med_name, med_details in pt.hosp_meds.items() %}
+            {% if med_details.get('home') == 'on' %}
+                    {{ med_name.capitalize() }} 
+                    {{ med_details.get('dose', 'N/A') }} {{ med_details.get('units', '') }} 
+                    {{ med_details.get('Formulation', '') }} {{ med_details.get('frequency', '') }}
+            {% endif %}
+            <div>
+        {% endfor %}
+    <a href="{{ url_for('meds.edit_home_meds', index=index) }}" class="btn btn-primary">Edit Home Medications</a>
+</div>
+
+
+<hr>
+
+<!-- Physical Exam and Vitals Section -->
+<h3 class="subsection-title">
+     
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('phys-section')">
+    Physical Exam and Vitals
+</h3>
+<div id="phys-section">
+    <p><strong>Vitals:</strong></p>
+    <p>
+        {% if pt.vitals and pt.vitals|length > 0 %}
+            {% set latest_vitals = pt.vitals[-1] %}
+            {% for date, values in latest_vitals.items() %}
+                {{ date[5:10] }}<br>
+                Temp: {{ values.get('temp', 'N/A') }} &nbsp; 
+                BP: {{ values.get('bp', 'N/A') }} &nbsp; 
+                HR: {{ values.get('hr', 'N/A') }} &nbsp; 
+                RR: {{ values.get('rr', 'N/A') }} &nbsp; 
+                SpO2: {{ values.get('o2sat', 'N/A') }}% &nbsp;
+                O2 Modality: 
+                {% if values.get('o2modality') and values.o2modality|length == 2 %}
+                    {{ values.o2modality[1] }} ({{ values.o2modality[0] }})
+                {% else %}
+                    N/A
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            No vitals found
+        {% endif %}
+    </p>
+
+    <p><strong>Physical Exam Findings:</strong></p>
+    <p>
+        {% if pt.exams and pt.exams|length > 0 %}
+            {% set latest_exam = pt.exams[-1] %}
+            {% for date, findings in latest_exam.items() %}
+                {% if findings.cv %}
+                    {{ findings.cv.sounds | join(', ') }} present. 
+                    {% if findings.cv.murmur == "Murmur Present" %}
+                        Murmur detected and can be described as {{ findings.cv.murmur_description }}.
+                    {% else %}
+                        No murmur.
+                    {% endif %}
+                {% endif %}
+                <br>
+                {% if findings.resp %}
+                    {{ findings.resp.air_entry }}. 
+                    {% if findings.resp.crackles == "Crackles present" %}
+                        Crackles detected and described as {{ findings.resp.crackles_description }}.
+                    {% else %}
+                        No crackles.
+                    {% endif %}
+                {% endif %}
+                <br>
+                {% if findings.abd %}
+                    Abdomen is {{ findings.abd.abd_exam }}. 
+                    {% if findings.abd.abd_description %}
+                        Additional findings: {{ findings.abd.abd_description }}.
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            No physical exam findings available.
+        {% endif %}
+    </p>
+    <a href="{{ url_for('physical_exam.phys', index=index) }}" class="btn btn-primary">Enter Physical Exam</a>
+</div>
+<hr>
+
+<!-- Labs Section -->
+<h3 class="subsection-title">
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('labs-section')">
+    Labs (Latest)
+</h3>
+<div id="labs-section">
+    WBC: {{ pt.labs.get("WBC")[-1][0] if pt.labs.get("WBC") else "N/A" }} &nbsp;&nbsp;&nbsp;
+    Hgb: {{ pt.labs.get("HGB")[-1][0] if pt.labs.get("HGB") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    Platelets: {{ pt.labs.get("PLT")[-1][0] if pt.labs.get("PLT") else "N/A" }}</br>
+    Na: {{ pt.labs.get("Na")[-1][0] if pt.labs.get("Na") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    K: {{ pt.labs.get("K")[-1][0] if pt.labs.get("K") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    Cl: {{ pt.labs.get("Cl")[-1][0] if pt.labs.get("Cl") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    CO2: {{ pt.labs.get("CO2")[-1][0] if pt.labs.get("CO2") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    Urea: {{ pt.labs.get("Urea")[-1][0] if pt.labs.get("Urea") else "N/A" }}&nbsp;&nbsp;&nbsp;
+    Creatinine: {{ pt.labs.get("Creatinine")[-1][0] if pt.labs.get("Creatinine") else "N/A" }}
+
+    <!-- Button to update labs from clipboard -->
+    <form method="POST" action="{{ url_for('update_labs', index=index) }}">
+        <button type="submit">Update Labs from Clipboard</button>
+    </form>
+</div>
+<hr>
+
+<!-- Microbiology Subsection -->
+<h3 class="subsection-title">
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('micro-section')">
+    Microbiology
+</h3>
+<div id="micro-section">
+    {% if pt.micro and pt.micro|length > 0 %}
+        {% set grouped_cultures = {} %}
+        {% for culture in pt.micro %}
+            {% set type = culture.culture_type or "Unknown" %}
+            {% if type not in grouped_cultures %}
+                {% set _ = grouped_cultures.update({type: []}) %}
+            {% endif %}
+            {% set _ = grouped_cultures[type].append(culture) %}
+        {% endfor %}
+
+        {% for type, cultures in grouped_cultures.items() %}
+            <h4>{{ type.title() }}</h4>
+            <ul>
+                {% for culture in cultures %}
+                    
+                        <strong>Date:</strong> {{ culture.date[:6] or "N/A" }}
+                        {{ culture.gram_stain or "" }}
+                        {% if culture.bacteria and culture.bacteria|length > 0 %}
+                        
+                                {% for bacteria in culture.bacteria %}
+                                    <br>&nbsp; - &nbsp;{{ bacteria }}
+                                {% endfor %}
+                            
+                        {% else %}
+                            (-)
+                        {% endif -%}
+                        <br>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>No microbiology results available.</p>
+    {% endif %}
+</div>
+<hr>
+
+<!-- Imaging Subsection -->
+<h3 class="subsection-title">
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('imaging-section')">
+    Imaging
+</h3>
+<div id="imaging-section">
+    {% if pt.imaging and pt.imaging|length > 0 %}
+        {% for study_type, studies in pt.imaging.items() %}
+            <h4>{{ study_type }}</h4>
+                {% for study in studies %}
+                        &nbsp; - &nbsp; {{ study.date or "N/A" }} -->
+                         {{ study.thoughts or "N/A" }}
+                         <br>
+                {% endfor %}
+        {% endfor %}
+    {% else %}
+        <p>No imaging results available.</p>
+    {% endif %}
+    <a href="{{ url_for('imaging_thoughts', index=index) }}" class="btn btn-primary">Edit Imaging Thoughts</a>
+</div>
+<hr>
+
+<!-- Issues Section -->
+<h3 class="subsection-title">
+    <img src="/static/images/plus.png" alt="Toggle" onclick="toggleSection('issues-section')">
+    Issues
+</h3>
+<div id="issues-section">
+    <p><strong>Patient Issues:</strong></p>
+    <ul>
+        {% if pt.issues and pt.issues|length > 0 %}
+            {% for issue in pt.issues %}
+                <h4>{{ loop.index }}. {{ issue.capitalize() }}</h4>
+                
+            {% endfor %}
+        {% else %}
+            No issues found
+        {% endif %}
+    </ul>
+    <a href="{{ url_for('issues', index=index) }}" class="btn btn-primary">Add Issues</a>
+</div>
+
+<a href="{{ url_for('index') }}">Back to pt List</a>
+
+<script>
+    function toggleSection(id) {
+        const section = document.getElementById(id);
+        if (section) {
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Prevent layout shifts by ensuring the section's height is maintained
+        if (section.style.display === 'none') {
+            section.style.height = '0';
+            section.style.overflow = 'hidden';
+        } else {
+            section.style.height = 'auto';
+            section.style.overflow = 'visible';
+        }
+    }
+</script>
+
+{% endblock %}

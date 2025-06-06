@@ -1,0 +1,59 @@
+{% from '_history_macros.html' import get_field, is_checked %}
+
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <!-- Left side: Form fields -->
+    <div style="flex: 1; margin-right: 20px;">
+        <p>
+            <div>
+                <label for="confusion_date">Onset Date</label>
+                <input type="date" id="confusion_date" name="confusion_date" value="{{ get_field(patient, 'confusion', 'confusion_onset_date') }}">
+            </div> 
+
+            <div>
+                <label for="confusion_acute_onset">Acute Onset</label>
+                <input type="checkbox" id="confusion_acute_onset" name="confusion_acute_onset" {{ is_checked(patient, 'confusion', 'confusion_acute_onset') }} onchange="updateCAM()"><br>
+                <label for="confusion_fluctuating">Fluctuating</label>
+                <input type="checkbox" id="confusion_fluctuating" name="confusion_fluctuating" {{ is_checked(patient, 'confusion', 'confusion_fluctuating') }} onchange="updateCAM()"><br>
+                <label for="inattention">Inattention</label>
+                <input type="checkbox" id="inattention" name="inattention" {{ is_checked(patient, 'confusion', 'inattention') }} onchange="updateCAM()"><br>
+                <label for="disorganized_thoughts">Disorganized Thoughts</label>
+                <input type="checkbox" id="disorganized_thoughts" name="disorganized_thoughts" {{ is_checked(patient, 'confusion', 'confusion_disorganized_thoughts') }} onchange="updateCAM()"><br>
+                <label for="altered_level_of_consciousness">Altered Level of Consciousness</label>
+                <input type="checkbox" id="altered_level_of_consciousness" name="altered_level_of_consciousness" {{ is_checked(patient, 'confusion', 'altered_level_of_consciousness') }} onchange="updateCAM()"><br>
+            </div>
+            <div>
+                <label for="confusion_noticed_by">Noticed By</label>
+                <select id="confusion_noticed_by" name="confusion_noticed_by">
+                    <option value="care home staff" {% if get_field(patient, 'confusion', 'confusion_noticed_by') == 'care home staff' %} selected {% endif %}>Care Home Staff</option>
+                    <option value="family" {% if get_field(patient, 'confusion', 'confusion_noticed_by') == 'family' %} selected {% endif %}>Family</option>
+                    <option value="" {% if get_field(patient, 'confusion', 'confusion_noticed_by') == '' %} selected {% endif %}>N/A</option>
+                </select>
+            </div>
+        </p>
+    </div>
+
+    <!-- Right side: CAM 1234 -->
+    <div style="flex: 0 0 150px; text-align: center; font-size: 24px; font-weight: bold;">
+        <span id="cam1">1</span> <span id="cam2">2</span> <span id="cam3">3</span> <span id="cam4">4</span>
+    </div>
+</div>
+
+<script>
+    function updateCAM() {
+        // Get the checkbox states
+        const acuteOnset = document.getElementById('confusion_acute_onset').checked;
+        const fluctuating = document.getElementById('confusion_fluctuating').checked;
+        const inattention = document.getElementById('inattention').checked;
+        const disorganizedThoughts = document.getElementById('disorganized_thoughts').checked;
+        const alteredConsciousness = document.getElementById('altered_level_of_consciousness').checked;
+
+        // Update CAM 1234 colors
+        document.getElementById('cam1').style.color = (acuteOnset || fluctuating) ? 'red' : 'black';
+        document.getElementById('cam2').style.color = inattention ? 'red' : 'black';
+        document.getElementById('cam3').style.color = disorganizedThoughts ? 'red' : 'black';
+        document.getElementById('cam4').style.color = alteredConsciousness ? 'red' : 'black';
+    }
+
+    // Run updateCAM on page load to initialize the colors
+    document.addEventListener('DOMContentLoaded', updateCAM);
+</script>

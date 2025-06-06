@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="section-title">Add to Patient's PMHx</h2>
+
+<form method="POST" action="{{ url_for('pmhx.pmhx', index=index) }}">
+    <p>
+        <label for="condition"><strong>Select Condition(s):</strong></label>
+        <select id="condition" name="condition" class="select2" multiple onchange="showConditionForms()" required>
+            <option></option>
+            {% for condition, details in condition_forms.items() %}
+                <option value="{{ details.id }}"{% if condition in patient_pmhx %}selected{% endif %}>{{ condition }}</option>
+            {% endfor %}
+        </select>
+    </p>
+
+    {% for condition, details in condition_forms.items() %}
+        <div id="{{ details.id }}-form" class="condition-form card" style="display: none;">
+            <h3>{{ details.heading }}</h3>
+            {% include details.template %}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Add PMHx</button>
+</form>
+
+<script>
+    function showConditionForms() {
+        const selectedOptions = Array.from(document.getElementById('condition').selectedOptions).map(option => option.value);
+        const forms = document.querySelectorAll('.condition-form');
+        forms.forEach(form => form.style.display = 'none'); // Hide all forms
+        selectedOptions.forEach(condition => {
+            const form = document.getElementById(`${condition}-form`);
+            if (form) {
+                form.style.display = 'block'; // Show forms for selected conditions
+            }
+        });
+    }
+
+    // Run showConditionForms() on page load
+    document.addEventListener('DOMContentLoaded', () => {
+    showConditionForms();
+    });
+</script>
+{% endblock %}

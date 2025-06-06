@@ -1,0 +1,22 @@
+{% from '_pmhx_macros.html' import is_checked %}
+
+<p>
+    <label for="agents"><strong>Antihypertensive Agents:</strong></label><br>
+    <input type="checkbox" id="ace_inhibitor" name="agents" value="ACE inhibitor" {{ is_checked(patient, 'Hypertension', 'agents', 'ACE inhibitor') }}>
+    <label for="ace_inhibitor">ACE inhibitor</label><br>
+    
+    <input type="checkbox" id="arb" name="agents" value="ARB" {{ is_checked(patient, 'Hypertension', 'agents', 'ARB') }}>
+    <label for="arb">ARB</label><br>
+    
+    <input type="checkbox" id="beta_blocker" name="agents" value="Beta-blocker" {{ is_checked(patient, 'Hypertension', 'agents', 'Beta-blocker') }}>
+    <label for="beta_blocker">Beta-blocker</label><br>
+    
+    <input type="checkbox" id="diuretic" name="agents" value="Diuretic" {{ is_checked(patient, 'Hypertension', 'agents', 'Diuretic') }}>
+    <label for="diuretic">Diuretic</label><br>
+    
+    <input type="checkbox" id="ccb" name="agents" value="CCB" {{ is_checked(patient, 'Hypertension', 'agents', 'CCB') }}>
+    <label for="ccb">CCB</label><br>
+    
+    <input type="checkbox" id="mra" name="agents" value="MRA" {{ is_checked(patient, 'Hypertension', 'agents', 'MRA') }}>
+    <label for="mra">MRA</label>
+</p>

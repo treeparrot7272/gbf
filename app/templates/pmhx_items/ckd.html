@@ -1,0 +1,34 @@
+{% from '_pmhx_macros.html' import is_checked %}
+
+<p>
+    <label for="baseline_creatinine"><strong>Baseline:</strong></label>
+    <input type="text" id="baseline_creatinine" name="baseline_creatinine"><br>
+    <label for="ckd_etiology"><strong>Etiology:</strong></label>
+    <select id="ckd_etiology" name="ckd_etiology">
+        <option value="Diabetes">Diabetes</option>
+        <option value="Hypertension">Hypertension</option>
+        <option value="Glomerulonephritis">Glomerulonephritis</option>
+        <option value="Polycystic Kidney Disease">Polycystic Kidney Disease</option>
+        <option value="Other">Other</option>
+    </select><br>
+    <label for="ckd_stage"><strong>Stage:</strong></label>
+    <select id="ckd_stage" name="stage">
+        <option value="Stage 1">Stage 1</option>
+        <option value="Stage 2">Stage 2</option>
+        <option value="Stage 3">Stage 3</option>
+        <option value="Stage 4">Stage 4</option>
+        <option value="Stage 5">Stage 5</option>
+        <option value="End Stage Renal Disease">End Stage Renal Disease</option>
+        <option value="Dialysis">Dialysis</option>
+        <option value="Transplant">Transplant</option>
+    </select><br>
+    <label for="dialysis"><strong>Dialysis:</strong></label>
+    <select id="dialysis" name="dialysis">
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+        <option value="Peritoneal">Peritoneal</option>
+        <option value="Hemodialysis">Hemodialysis</option>
+    </select><br>
+    <label for="nephrologist"><strong>Nephrologist:</strong></label>
+    <input type="text" id="nephrologist" name="nephrologist">
+</p>

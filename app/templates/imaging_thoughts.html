@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="section-title">Imaging Thoughts</h2>
+
+<form method="POST" action="{{ url_for('update_imaging_thoughts', index=index) }}">
+    {% for study_type, studies in pt.imaging.items() %}
+        <h3>{{ study_type }}</h3>
+        <ul>
+            {% for study in studies %}
+                <li>{{ loop.index }}
+                    {% set current_index = loop.index %}
+                    <strong>Date:</strong> {{ study.date or "N/A" }}<br>
+                    <strong>Findings:</strong> {{ study.findings or "N/A" }}<br>
+                    
+                    <!-- Suggestions -->
+                    {% if study.suggestions and study.suggestions|length > 0 %}
+                        <div>
+                            <strong>Suggestions:</strong>
+                            {% for suggestion in study.suggestions %}
+                                <button type="button" class="suggestion-btn" 
+                                        onclick="addToTextbox('thoughts_{{ study_type }}_{{ current_index  }}', '{{ suggestion }}')">
+                                    {{ suggestion }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Textbox -->
+                    <textarea id="thoughts_{{ study_type }}_{{ loop.index }}" 
+                              name="thoughts_{{ study_type }}_{{ loop.index }}" 
+                              rows="3" cols="50">{{ study.thoughts or "" }}</textarea><br><br><hr>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    <button type="submit">Save Thoughts</button>
+</form>
+
+<a href="{{ url_for('patient_details', index=index) }}">Back to Patient Details</a>
+
+<script>
+    // JavaScript function to append text to the textarea
+    function addToTextbox(textboxId, text) {
+        const textbox = document.getElementById(textboxId); // Get the textarea by its id
+        if (textbox) {
+            textbox.value += (textbox.value ? ' ' : '' ) + text + '.'; // Append with a newline if not empty
+        } else {
+            console.error(`Textbox with id "${textboxId}" not found.`);
+        }
+    }
+</script>
+{% endblock %}
+

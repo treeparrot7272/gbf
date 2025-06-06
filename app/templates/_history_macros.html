@@ -1,0 +1,18 @@
+<!---Fields-->
+{% macro get_field(patient, condition, field, default='') -%}
+    {{ patient.history.get(condition, {}).get(field, default) }}
+{%- endmacro %}
+
+<!---Checkboxes-->
+{% macro is_checked(patient, condition, field) %}
+    {% if patient.history.get(condition, {}).get(field, false) %}
+        checked
+    {% endif %}
+{% endmacro %}
+
+<!---Radio buttons-->
+{% macro is_selected(patient, condition, field, option) -%}
+    {% if patient.history.get(condition, {}).get(field, '') == option %}
+        checked
+    {% endif %}
+{%- endmacro %}

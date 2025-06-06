@@ -1,0 +1,18 @@
+<!---Fields-->
+{% macro get_field(patient, disease, field, default='') -%}
+    {{ patient.pmhx.get(disease, {}).get(field, default) }}
+{%- endmacro %}
+
+<!---Checkboxes-->
+{% macro is_checked(patient, condition, field, value) %}
+    {% if patient.pmhx.get(condition, {}).get(field, '') == value %}
+        checked
+    {% endif %}
+{% endmacro %}
+
+<!---Radio buttons-->
+{% macro is_selected(patient, disease, field, option) -%}
+    {% if patient.pmhx.get(disease, {}).get(field, '') == option %}
+        checked
+    {% endif %}
+{%- endmacro %}

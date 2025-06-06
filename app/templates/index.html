@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="page-title">Data for {{ week.week_name }}</h1>
+
+<!-- Admitted Patients -->
+<h2 class="section-title">Admitted Patients</h2>
+<ul>
+    {% for pt in admitted_patients %}
+    <li>
+        <a href="{{ url_for('patient_details', index=pt['index']) }}">{{ pt['patient'] }}</a>
+        <form method="POST" action="{{ url_for('discharge_patient', index=pt['index']) }}" style="display:inline;">
+            <button type="submit">Discharge</button>
+        </form>
+        <form method="POST" action="{{ url_for('delete_patient', index=pt['index']) }}" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Discharged Patients -->
+<h2 class="section-title">Discharged Patients</h2>
+<ul>
+    {% for pt in discharged_patients %}
+    <li>
+        <a href="{{ url_for('patient_details', index=pt['index']) }}">{{ pt['patient'] }}</a> (D/C {{ pt['patient'].discharge_date[5:] }})
+        <form method="POST" action="{{ url_for('delete_patient', index=pt['index']) }}" style="display:inline;">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

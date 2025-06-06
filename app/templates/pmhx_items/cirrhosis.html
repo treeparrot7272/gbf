@@ -1,0 +1,29 @@
+{% from '_pmhx_macros.html' import get_field, is_checked %}
+
+<p>
+    <div class="checkbox-group">
+        <label for="etiology_cirrhosis"><strong>Etiology:</strong></label>
+        <div>
+            <input type="checkbox" id="alcoholic" name="etiology_cirrhosis" value="Alcoholic" {{ is_checked(patient, 'Cirrhosis', 'etiology_cirrhosis', 'Alcoholic') }}>
+            <label for="alcoholic">Alcoholic</label>
+
+            <input type="checkbox" id="MASH" name="etiology_cirrhosis" value="MASH" {{ is_checked(patient, 'Cirrhosis', 'etiology_cirrhosis', 'MASH') }}>
+            <label for="MASH">MASH</label>
+
+            <input type="checkbox" id="non_viral" name="etiology_cirrhosis" value="Non-Viral" {{ is_checked(patient, 'Cirrhosis', 'etiology_cirrhosis', 'Non-Viral') }}>
+            <label for="non_viral">Non-Viral</label>
+
+            <input type="checkbox" id="unknown" name="etiology_cirrhosis" value="Unknown" {{ is_checked(patient, 'Cirrhosis', 'etiology_cirrhosis', 'Unknown') }}>
+            <label for="unknown">Unknown</label>
+
+
+        </div>
+        <div>
+            <label for="hepatologist"><strong>Hepatologist:</strong></label>
+            <select id="hepatologist" name="hepatologist">
+                <option value="Peretz">Peretz</option>
+            </select>
+        </div>
+        </div>
+        
+</p>

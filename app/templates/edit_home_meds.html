@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="section-title">Edit Home Medications</h2>
+
+<form method="POST" action="{{ url_for('meds.update_home_meds', index=index) }}">
+    <div id="medications-container">
+        <!-- Dynamic medication fields will be added here -->
+    </div>
+    <button type="button" id="add-medication-btn" class="btn btn-primary">Add Medication</button>
+    <br><br>
+    <button type="submit" class="btn btn-success">Save Medications</button>
+</form>
+
+<a href="{{ url_for('patient_details', index=index) }}" class="btn btn-secondary">Back to Patient Details</a>
+
+<script>
+    let medicationCount = 0; // Counter to track the number of medications
+
+    document.getElementById('add-medication-btn').addEventListener('click', function () {
+        medicationCount++;
+
+        // Create a new medication fieldset
+        const medicationFields = `
+            <fieldset class="medication-fieldset">
+                <legend>Medication ${medicationCount}</legend>
+                <label for="med_name_${medicationCount}">Name:</label>
+                <input type="text" id="med_name_${medicationCount}" name="med_name_${medicationCount}" required>
+                <br>
+                <label for="med_dose_${medicationCount}">Dose:</label>
+                <input type="text" id="med_dose_${medicationCount}" name="med_dose_${medicationCount}" required>
+                <br>
+                <label for="med_route_${medicationCount}">Route:</label>
+                <input type="text" id="med_route_${medicationCount}" name="med_route_${medicationCount}" required>
+                <br>
+                <label for="med_frequency_${medicationCount}">Frequency:</label>
+                <input type="text" id="med_frequency_${medicationCount}" name="med_frequency_${medicationCount}" required>
+                <br><br>
+            </fieldset>
+        `;
+
+        // Append the new fields to the medications container
+        document.getElementById('medications-container').insertAdjacentHTML('beforeend', medicationFields);
+    });
+</script>
+{% endblock %}

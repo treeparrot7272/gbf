@@ -1,0 +1,27 @@
+{% from '_pmhx_macros.html' import get_field, is_checked %}
+
+<p>
+    <label for="heart_failure"><strong>Heart Failure:</strong></label>
+    <input type="text" id="heart_failure" name="heart_failure" value="{{ get_field(patient, 'CHF', 'heart_failure') }}">
+</p>
+<p>
+    <label for="ef"><strong>EF:</strong></label>
+    <input type="text" id="ef" name="ef" value="{{ get_field(patient, 'CHF', 'ef') }}">
+</p>
+<p>
+    <label for="last_echo"><strong>Last Echo:</strong></label>
+    <input type="date" id="last_echo" name="last_echo" value="{{ get_field(patient, 'CHF', 'last_echo') }}">
+</p>
+<p>
+    <label><strong>GDMT:</strong></label><br>
+    <input type="checkbox" id="beta_blocker" name="gdmt" value="Beta-blocker" {{ is_checked(patient, 'CHF', 'gdmt', 'Beta-blocker') }}>
+    <label for="beta_blocker">Beta-blocker</label><br>
+    <input type="checkbox" id="ace_inhibitor" name="gdmt" value="ACE inhibitor" {{ is_checked(patient, 'CHF', 'gdmt', 'ACE inhibitor') }}>
+    <label for="ace_inhibitor">ACE inhibitor</label><br>
+    <input type="checkbox" id="arni" name="gdmt" value="ARNI" {{ is_checked(patient, 'CHF', 'gdmt', 'ARNI') }}>
+    <label for="arni">ARNI</label>
+</p>
+<p>
+    <label for="other_findings"><strong>Other Findings:</strong></label>
+    <textarea id="other_findings" name="other_findings">{{ get_field(patient, 'CHF', 'other_findings') }}</textarea>
+</p>

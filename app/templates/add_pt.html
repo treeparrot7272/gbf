@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="section-title">Add New Patient</h2>
+<form class="modern-form" method="POST" action="/add_patient">
+
+    <label for="first_initial">First Initial:</label>
+    <input type="text" id="first_initial" name="first_initial" required><br>
+
+    <label for="second_initial">Second Initial:</label>
+    <input type="text" id="second_initial" name="second_initial" required><br>
+
+    <label for="admit_date">Admit Date:</label>
+    <input type="date" id="admit_date" name="admit_date" required><br>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" name="dob" required><br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender" name="gender" required>
+        <option value="M">M</option>
+        <option value="F">F</option>
+        <option value="O">O</option>
+    </select><br>
+
+    <input type="submit" value="Add Patient">
+</form>
+{% endblock %}

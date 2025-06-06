@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="section-title">Edit Prestory</h2>
+
+<form method="POST" action="{{ url_for('prestory.prestory', index=index) }}">
+    <p>
+        <label for="initials"><strong>Patient Initials:</strong></label>
+        <input type="text" id="initials" name="initials" value="{{ patient.i1 }}{{ patient.i2 }}" required oninput="updateSummary()">
+    </p>
+    <p>
+        <label for="age"><strong>Age:</strong></label>
+        <input type="number" id="age" name="age" value="{{ patient.age }}" required oninput="updateSummary()">
+
+        <label for="gender"><strong>Gender:</strong></label>
+        <select id="gender" name="gender" required onchange="updateSummary()">
+            <option value="M" {% if patient.gender == "M" %}selected{% endif %}>Male</option>
+            <option value="F" {% if patient.gender == "F" %}selected{% endif %}>Female</option>
+            <option value="O" {% if patient.gender == "O" %}selected{% endif %}>Other</option>
+        </select>
+
+        <label for="admit_date"><strong>Admission Date:</strong></label>
+        <input type="date" id="admit_date" name="admit_date" value="{{ patient.admit_date }}" onchange="updateSummary()">
+    </p>
+
+    <p>
+        <label for="patient_history"><strong>History Items:</strong></label>
+        <select id="patient_history" name="patient_history" class="select2" multiple onchange="showComplaintForms()">
+            <option></option>
+            {% for history, details in complaint_forms.items() %}
+                <option value="{{ details.id }}" {% if history in patient_history %} selected{% endif %}>{{ history }}</option>
+            {% endfor %}
+        </select>
+    </p>
+
+    {% for history, details in complaint_forms.items() %}
+        <div id="{{ details.id }}-form" class="history-form card" style="display: none;">
+            <h3>{{ details.heading }}</h3>
+            {% include details.template %}
+        </div>
+    {% endfor %}
+
+    <!-- New button to submit the form and refresh the page -->
+    <button type="submit" class="btn btn-secondary" name="action" value="refresh">Update and Refresh</button>
+
+    <!-- Save Changes button -->
+    <button type="submit" class="btn btn-primary" name="action" value="save">Save Changes</button>
+</form>
+    
+    
+    <!-- Dynamic summary text -->
+    <p id="summary-text" style="margin-top: 20px;">
+        {{ patient.i1 }}{{ patient.i2 }} is a {{ patient.age }} {{ patient.gender }} who was admitted to hospital on {{ patient.admit_date[5:] }} with complaints of {{ patient.history | join(', ') }}.
+    </p>
+    
+    <a href="{{ url_for('patient_details', index=index) }}" class="btn btn-secondary">Cancel</a>
+    
+    <script>
+        async function updateSummary() {
+            // Get the form values
+            const initials = document.getElementById('initials').value;
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const admitDate = document.getElementById('admit_date').value;
+
+            // Get selected history complaints
+            const historyItemSelect = document.getElementById('patient_history');
+            const selectedComplaints = Array.from(historyItemSelect.selectedOptions).map(option => option.value);
+
+            // Update the basic summary text
+            const summaryText = `${initials} is a ${age} ${gender} who was admitted to hospital on ${admitDate.slice(5)} with complaints of ${selectedComplaints.join(', ')}.`;
+            document.getElementById('summary-text').innerHTML = summaryText;
+
+            // Fetch and append write-ups for each selected history item
+            const writeUps = [];
+            for (const complaint of selectedComplaints) {
+                const url = `/prestory/get_write_up/${complaint}?index={{index}}`;
+                console.log(`Fetching write-up from: ${url}`);
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const writeUp = await response.text();
+                        writeUps.push(writeUp);
+                    } else {
+                        console.error(`Error fetching write-up for ${complaint}: ${response.statusText}`);
+                    }
+                } catch (error) {
+                    console.error(`Error fetching write-up for ${complaint}:`, error);
+                }
+            }
+
+            // Append the write-ups to the summary text
+            if (writeUps.length > 0) {
+                const fullSummary = `${summaryText}<br><br>${writeUps.join('\n\n')}`;
+                document.getElementById('summary-text').innerHTML = fullSummary;
+            }
+        }
+
+        function showComplaintForms() {
+            const selectedOptions = Array.from(document.getElementById('patient_history').selectedOptions).map(option => option.value);
+            const forms = document.querySelectorAll('.history-form');
+            forms.forEach(form => form.style.display = 'none'); // Hide all forms
+            selectedOptions.forEach(complaint => {
+                const form = document.getElementById(`${complaint}-form`);
+                if (form) {
+                    form.style.display = 'block'; // Show forms for selected conditions
+                }
+            });
+        }
+
+        // Run showComplaintForms() on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showComplaintForms();
+        });
+
+        // Run updateSummary() on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateSummary();
+        });
+
+    </script>
+{% endblock %}

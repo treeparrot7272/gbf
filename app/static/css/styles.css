@@ -1,0 +1,151 @@
+/* filepath: /Users/matthewmittelstadt/Desktop/code/gbf/app/static/css/styles.css */
+
+.stop-date {
+    float: right; /* Aligns the text to the right */
+    text-align: right; /* Ensures the text inside the span is right-aligned */
+    width: 100px; /* Optional: Set a fixed width for consistent alignment */
+    color: rgb(212, 20, 20); /* Optional: Style the text color for clarity */
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    color: #333;
+}
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+.nav-bar {
+    background-color: #101763;
+    padding: 10px;
+    border-bottom: 1px solid #ffffff;
+    color: white;
+}
+
+.nav-bar a {
+    color: white !important;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.page-title, .section-title, .subsection-title {
+    margin-bottom: 10px;
+}
+.modern-form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+.modern-form input, .modern-form select {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+/* Style for all hyperlinks */
+a {
+    color: blue; /* Set the text color to blue */
+    text-decoration: none; /* Remove the underline */
+}
+
+/* Style for hovered links */
+a:hover {
+    color: orange !important; /* Change the text color to orange on hover */
+    text-decoration: none; /* Ensure no underline on hover */
+}
+
+/* Style for visited links */
+a:visited {
+    color: blue; /* Keep the text color blue even after being visited */
+    text-decoration: none; /* Ensure no underline for visited links */
+}
+
+/* Style for active links (when clicked) */
+a:active {
+    color: orange; /* Optional: Keep the hover color when the link is clicked */
+    text-decoration: none; /* Ensure no underline for active links */
+}
+
+.card {
+    background-color: #ffffff; /* White background */
+    border: 3px solid #080937; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Padding inside the card */
+    margin: 20px 0; /* Space between cards */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.condition-form h3 {
+    margin-top: 0; /* Remove extra margin from the heading */
+    font-size: 1.5em; /* Adjust heading size */
+    color: #333; /* Darker text color */
+}
+
+.checkbox-group {
+    display: block; /* Use flexbox for horizontal alignment */
+    margin-bottom: 15px; /* Space below the checkbox group */
+}
+
+.checkbox-group label {
+    display: block; /* Ensure the label and checkbox align properly */
+    margin-bottom: 5px;
+}
+
+.checkbox-group label {
+    display: block; /* Ensure the label is on its own line */
+    margin-bottom: 5px; /* Add spacing below the label */
+}
+
+.checkbox-group div {
+    display: flex; /* Align checkboxes/radio buttons horizontally */
+    flex-wrap: wrap; /* Allow wrapping to the next line if needed */
+    gap: 10px; /* Add spacing between checkboxes/radio buttons */
+}
+
+.table-container {
+    margin: 0 auto;
+    max-width: 1000px;
+    text-align: left;
+}
+
+#meds-section {
+    display: block; /* Ensure the section is visible by default */
+    overflow: hidden; /* Prevent layout shifts */
+}
+
+.hidden {
+    display: none; /* Utility class for hiding elements */
+}
+
+/* Style for subsection toggle images */
+.subsection-title img {
+    height: 1em; /* Match the height of the heading text */
+    vertical-align: middle; /* Align with the text */
+}
+
+.medication-group {
+    margin-bottom: 1em; /* Add space between groups */
+}
+
+.group-spacer {
+    height: 1em; /* Create consistent spacing when copied */
+    display: block;
+}
+
+/* Hide the spacer when medication classes are hidden */
+.medication-group:last-child .group-spacer {
+    display: none; /* No need for extra space after the last group */
+}

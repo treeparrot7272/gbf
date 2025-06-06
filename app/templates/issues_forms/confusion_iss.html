@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Initial Issue Assessment</h2>
+<div class="card mt-3">
+  <div class="card-body">
+    <p>
+      {{ cam_statement|replace('\n', '<br>'|safe) }}
+    </p>
+    <p>{{ testing_ground }}</p>
+    <button class="btn btn-primary mt-3" onclick="document.getElementById('new-entry-form').style.display='block'">
+      Add New Confusion Entry
+    </button>
+    <div id="new-entry-form" style="display:none;" class="mt-3">
+      <form method="POST" action="{{ url_for('add_confusion_entry', index=index) }}">
+        <div class="mb-2">
+          <label for="date_of_entry">Date of Entry:</label>
+          <input type="date" id="date_of_entry" name="date_of_entry" required>
+        </div>
+        <div>
+          <label for="initial_meds">Meds found during first work-up:</label>
+            {% for med in patient.issues.confusion.initial["initial_meds"] %}
+              <div> {{ med }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-2">
+          <label for="notes"><strong>Notes:</strong></label>
+          <textarea id="notes" name="notes" class="form-control" rows="3" required></textarea>
+        </div>
+        <!-- Add more fields as needed -->
+        <button type="submit" class="btn btn-success">Save Entry</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% if patient.issues.confusion %}
+  <div class="mt-4">
+    <h5>Other Entries</h5>
+    {% for date, entry in patient.issues.confusion.items() if date != 'initial' %}
+      <div class="card mb-2">
+        <div class="card-header">{{ date }}</div>
+        <div class="card-body">
+          <p>{{ entry.notes }} {{ entry.days_since_onset }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
